@@ -26,7 +26,7 @@ class CodeWriter:
         self.dict = {"static": "16", "local" : "LCL", "argument": "ARG", "this": "THIS", "that" : "THAT",
                      "temp": "TEMP", "pointer" : "SP", "heap": "2048"}
         self.jump_var = 0
-
+        self.cur_func = ""
     def set_file_name(self, filename: str) -> None:
         """Informs the code writer that the translation of a new VM file is 
         started.
@@ -149,7 +149,17 @@ class CodeWriter:
         # (function_name)       // injects a function entry label into the code
         # repeat n_vars times:  // n_vars = number of local variables
         #   push constant 0     // initializes the local variables to 0
-        pass
+        self.cur_func = function_name
+        output = "(" + function_name + ")\n" \
+                 "@" + str(n_vars) + "\n" \
+                 "D=A\n" \
+                 "@SP\n" \
+                 "M=M+D\n" \
+                 "A=M-D\n"
+        for i in range(n_vars):
+            output += "M=0\n" \
+                      "A=A+1\n"
+        self.output_file.write(output)
 
     def write_call(self, function_name: str, n_args: int) -> None:
         """Writes assembly code that affects the call command. 
