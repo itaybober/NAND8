@@ -138,7 +138,6 @@ class CodeWriter:
         that labels the entry-point to the function's code.
         In the subsequent assembly process, the assembler translates this 
         symbol into the physical address where the function code starts.
-
         Args:
             function_name (str): the name of the function.
             n_vars (int): the number of local variables of the function.
