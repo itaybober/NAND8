@@ -21,12 +21,14 @@ class CodeWriter:
         # Your code goes here!
         # Note that you can write to output_stream like so:
         # output_stream.write("Hello world! \n")
+
         self.filename = ""
         self.output_file = output_stream
-        self.dict = {"static": "16", "local" : "LCL", "argument": "ARG", "this": "THIS", "that" : "THAT",
-                     "temp": "TEMP", "pointer" : "SP", "heap": "2048"}
+        self.dict = {"static": "16", "local": "LCL", "argument": "ARG", "this": "THIS", "that": "THAT",
+                     "temp": "TEMP", "pointer": "SP", "heap": "2048"}
         self.jump_var = 0
         self.cur_func = ""
+
     def set_file_name(self, filename: str) -> None:
         """Informs the code writer that the translation of a new VM file is 
         started.
@@ -107,9 +109,10 @@ class CodeWriter:
         Args:
             label (str): the label to write.
         """
-        # This is irrelevant for project 7,
-        # you will implement this in project 8!
-        pass
+        output = "// write label\n" \
+                 "(" + str(self.cur_func) + "$" + label + "\n"
+        self.output_file.write(output)
+
 
     def write_goto(self, label: str) -> None:
         """Writes assembly code that affects the goto command.
@@ -117,9 +120,10 @@ class CodeWriter:
         Args:
             label (str): the label to go to.
         """
-        # This is irrelevant for project 7,
-        # you will implement this in project 8!
-        pass
+        output = "// write goto\n" \
+                 "@" + str(self.cur_func) + "$" + label + "\n"\
+                 "0;JMP\n"
+        self.output_file.write(output)
 
     def write_if(self, label: str) -> None:
         """Writes assembly code that affects the if-goto command. 
@@ -138,6 +142,7 @@ class CodeWriter:
         that labels the entry-point to the function's code.
         In the subsequent assembly process, the assembler translates this 
         symbol into the physical address where the function code starts.
+
         Args:
             function_name (str): the name of the function.
             n_vars (int): the number of local variables of the function.
@@ -215,6 +220,7 @@ class CodeWriter:
                "A=A-1\n" \
                "D=D+M\n" \
                "M=D\n"
+
     # THIS IS A TEST
 
     def write_sub(self):
