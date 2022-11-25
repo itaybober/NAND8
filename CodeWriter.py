@@ -149,7 +149,8 @@ class CodeWriter:
         # repeat n_vars times:  // n_vars = number of local variables
         #   push constant 0     // initializes the local variables to 0
         self.cur_func = function_name
-        output = "(" + function_name + ")\n" \
+        output = "// function " + function_name + " " + n_vars
+        output += "(" + function_name + ")\n" \
                  "@" + str(n_vars) + "\n" \
                  "D=A\n" \
                  "@SP\n" \
@@ -188,7 +189,12 @@ class CodeWriter:
         # LCL = SP              // repositions LCL
         # goto function_name    // transfers control to the callee
         # (return_address)      // injects the return address label into the code
-        pass
+        # TODO Where do THIS/THAT get updated to?
+
+        self.jump_var += 1
+        self.output_file.write("(RETURN" + str(self.jump_var) + function_name + ")\n")
+    #     TODO save the pointers
+
 
     def write_return(self) -> None:
         """Writes assembly code that affects the return command."""
