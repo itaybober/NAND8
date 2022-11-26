@@ -141,9 +141,9 @@ class CodeWriter:
                  "A=M\n" \
                  "D=M\n"
         if self.cur_func == "":
-            output += '@' + label + "\nD;JEQ\n"
+            output += '@' + label + "\nD;JNE\n"
         else:
-            output += "@" + str(self.cur_func) + "$" + label + "\nD;JEQ\n"
+            output += "@" + str(self.cur_func) + "$" + label + "\nD;JNE\n"
         self.output_file.write(output)
 
 
