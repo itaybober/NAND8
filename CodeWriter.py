@@ -167,7 +167,7 @@ class CodeWriter:
         #   push constant 0     // initializes the local variables to 0
         self.cur_func = function_name
         output = "// function " + function_name + " " + str(n_vars)
-        output += "(" + function_name + ")\n" \
+        output += "\n(" + function_name + ")\n" \
                                         "@" + str(n_vars) + "\n" \
                                                             "D=A\n" \
                                                             "@SP\n" \
