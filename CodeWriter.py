@@ -141,7 +141,7 @@ class CodeWriter:
                  "A=M\n" \
                  "D=M\n"
         if self.cur_func == "":
-            output += '@' + label + "\n"
+            output += '@' + label + "\nD;JEQ\n"
         else:
             output += "@" + str(self.cur_func) + "$" + label + "\nD;JEQ\n"
         self.output_file.write(output)
@@ -391,7 +391,7 @@ class CodeWriter:
                "@SP\n" \
                "A=M-1\n" \
                "M=!M\n" \
- \
+
     def push_command(self, segment, index):
         output = "@" + str(index) + "\nD=A\n"
         if segment in ["static", "pointer", "temp"]:
