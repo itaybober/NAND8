@@ -21,16 +21,15 @@ class CodeWriter:
         # Your code goes here!
         # Note that you can write to output_stream like so:
         # output_stream.write("Hello world! \n")
-
         self.filename = ""
         self.output_file = output_stream
-        self.dict = {"static": "16", "local": "LCL", "argument": "ARG", "this": "THIS", "that": "THAT",
-                     "temp": "TEMP", "pointer": "SP", "heap": "2048"}
+        self.dict = {"static": "16", "local" : "LCL", "argument": "ARG", "this": "THIS", "that" : "THAT",
+                     "temp": "5", "pointer" : "3", "heap": "2048"}
         self.jump_var = 0
         self.cur_func = ""
 
     def set_file_name(self, filename: str) -> None:
-        """Informs the code writer that the translation of a new VM file is 
+        """Informs the code writer that the translation of a new VM file is
         started.
 
         Args:
@@ -49,8 +48,9 @@ class CodeWriter:
         input_filename, input_extension = os.path.splitext(os.path.basename(filename))
         self.filename = input_filename
 
+
     def write_arithmetic(self, command: str) -> None:
-        """Writes assembly code that is the translation of the given 
+        """Writes assembly code that is the translation of the given
         arithmetic command. For the commands eq, lt, gt, you should correctly
         compare between all numbers our computer supports, and we define the
         value "true" to be -1, and "false" to be 0.
@@ -77,8 +77,13 @@ class CodeWriter:
         elif command == "not":
             self.output_file.write(self.write_not())
 
+
+
+
+
+
     def write_push_pop(self, command: str, segment: str, index: int) -> None:
-        """Writes assembly code that is the translation of the given 
+        """Writes assembly code that is the translation of the given
         command, where command is either C_PUSH or C_POP.
 
         Args:
@@ -97,6 +102,7 @@ class CodeWriter:
         else:
             output += self.pop_command(segment, index)
         self.output_file.write(output)
+
 
     def write_label(self, label: str) -> None:
         """Writes assembly code that affects the label command. 
@@ -197,8 +203,8 @@ class CodeWriter:
         # TODO Where do THIS/THAT get updated to?
 
         self.jump_var += 1
-        self.output_file.write("(RETURN" + str(self.jump_var) + function_name + ")\n")
-    #     TODO save the pointers
+        output = "(RETURN" + str(self.jump_var) + function_name + ")\n@LCL\n"
+
 
 
     def write_return(self) -> None:
@@ -226,7 +232,6 @@ class CodeWriter:
                "A=A-1\n" \
                "D=D+M\n" \
                "M=D\n"
-
     # THIS IS A TEST
 
     def write_sub(self):
@@ -310,11 +315,13 @@ class CodeWriter:
         self.jump_var += 1
         return "//and\n" \
                "@SP\n" \
-               "M=M-1" \
+               "M=M-1\n" \
                "A=M\n" \
                "D=M\n" \
                "A=A-1\n" \
-               "D=D&M"
+               "M=D&M\n"
+
+
 
     def write_or(self):
         return "//or\n" +\
@@ -335,9 +342,9 @@ class CodeWriter:
 
     def push_command(self, segment, index):
         output = "@" + str(index) + "\nD=A\n"
-        if segment in ["static", "heap"]:
-            output += self.dict[segment] +\
-                      "A=D+A\n" +\
+        if segment in ["static", "pointer","temp"]:
+            output += "@" + self.dict[segment] +\
+                      "\nA=D+A\n" +\
                       "D=M\n"
         elif segment in self.dict:
             output += "@" + self.dict[segment] + "\nA=M\n"+ "A=D+A\n" \
@@ -350,24 +357,26 @@ class CodeWriter:
         return output
 
     def pop_command(self, segment, index):
-        output = "@SP\n" \
-                 "M=M-1\n" \
-                 "@" + str(index) + "\nD=A\n@"
+        self.jump_var += 1
         if segment == "constant":
-            return output + str(index)
-        if segment in ["static", "heap"]:
-            output += self.dict[segment]
+            return "@SP\n" \
+                   "M=M-1\n"
+        output = "@" + self.dict[segment]
+        if segment in ["temp","static","pointer"]:
+            output += "\nD=A\n"
         else:
-            output += self.dict[segment] + \
-                      "\nA=M\n"
-
-        output += "A=A+D\n" \
-                  "D=A\n" \
-                  "@TAR\n" \
-                  "M=D\n" \
-                  "@SP\n" \
-                  "M=D\n" \
-                  "@TAR\n" \
-                  "A=M\n" \
-                  "A=D\n"
+            output +=  "\nD=M\n"
+        output +=   "@TAR" + str(self.jump_var) + "\n" \
+                    "M=D\n" \
+                    "@"+str(index)+\
+                    "\nD=A\n" \
+                    "@TAR" + str(self.jump_var) + "\n" \
+                    "M=D+M\n" \
+                    "@SP\n" \
+                    "M=M-1\n" \
+                    "A=M\n" \
+                    "D=M\n" \
+                    "@TAR" + str(self.jump_var) + "\n" \
+                    "A=M\n" \
+                    "M=D\n"
         return output
