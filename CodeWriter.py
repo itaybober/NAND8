@@ -23,8 +23,8 @@ class CodeWriter:
         # output_stream.write("Hello world! \n")
         self.filename = ""
         self.output_file = output_stream
-        self.dict = {"static": "16", "local" : "LCL", "argument": "ARG", "this": "THIS", "that" : "THAT",
-                     "temp": "5", "pointer" : "3", "heap": "2048"}
+        self.dict = {"static": "16", "local": "LCL", "argument": "ARG", "this": "THIS", "that": "THAT",
+                     "temp": "5", "pointer": "3", "heap": "2048"}
         self.jump_var = 0
         self.cur_func = ""
 
@@ -47,7 +47,6 @@ class CodeWriter:
         # For example, using code similar to:
         input_filename, input_extension = os.path.splitext(os.path.basename(filename))
         self.filename = input_filename
-
 
     def write_arithmetic(self, command: str) -> None:
         """Writes assembly code that is the translation of the given
@@ -77,11 +76,6 @@ class CodeWriter:
         elif command == "not":
             self.output_file.write(self.write_not())
 
-
-
-
-
-
     def write_push_pop(self, command: str, segment: str, index: int) -> None:
         """Writes assembly code that is the translation of the given
         command, where command is either C_PUSH or C_POP.
@@ -103,7 +97,6 @@ class CodeWriter:
             output += self.pop_command(segment, index)
         self.output_file.write(output)
 
-
     def write_label(self, label: str) -> None:
         """Writes assembly code that affects the label command. 
         Let "Xxx.foo" be a function within the file Xxx.vm. The handling of
@@ -119,9 +112,8 @@ class CodeWriter:
         if self.cur_func == "":
             output += '(' + label + ')' + "\n"
         else:
-             output += "(" + str(self.cur_func) + "$" + label + ')' + "\n"
+            output += "(" + str(self.cur_func) + "$" + label + ')' + "\n"
         self.output_file.write(output)
-
 
     def write_goto(self, label: str) -> None:
         """Writes assembly code that affects the goto command.
@@ -131,12 +123,11 @@ class CodeWriter:
         """
         output = "// write goto\n"
         if self.cur_func == "":
-            output += '(' + label + ')' + "\n"
+            output += '@' + label + "\n"
         else:
             "@" + str(self.cur_func) + "$" + label + "\n"
         output += "0;JMP\n"
         self.output_file.write(output)
-
 
     def write_if(self, label: str) -> None:
         """Writes assembly code that affects the if-goto command. 
@@ -148,9 +139,11 @@ class CodeWriter:
                  "@SP\n" \
                  "M=M-1\n" \
                  "A=M\n" \
-                 "D=M\n" \
-                 "@" + str(self.cur_func) + "$" + label + "\n" \
-                 "D;JEQ"
+                 "D=M\n"
+        if self.cur_func == "":
+            output += '@' + label + "\n"
+        else:
+            output += "@" + str(self.cur_func) + "$" + label + "\nD;JEQ\n"
         self.output_file.write(output)
 
 
@@ -175,11 +168,11 @@ class CodeWriter:
         self.cur_func = function_name
         output = "// function " + function_name + " " + str(n_vars)
         output += "(" + function_name + ")\n" \
-                 "@" + str(n_vars) + "\n" \
-                 "D=A\n" \
-                 "@SP\n" \
-                 "M=M+D\n" \
-                 "A=M-D\n"
+                                        "@" + str(n_vars) + "\n" \
+                                                            "D=A\n" \
+                                                            "@SP\n" \
+                                                            "M=M+D\n" \
+                                                            "A=M-D\n"
         for i in range(n_vars):
             output += "M=0\n" \
                       "A=A+1\n"
@@ -218,25 +211,22 @@ class CodeWriter:
         # sve return address
         output = "// Call " + function_name + " " + str(n_args)
         output += "@RETURN" + str(self.jump_var) + function_name + "\n" + \
-                 self.save("LCL") + \
-                 self.save("ARG") + \
-                 self.save("THIS") + \
-                 self.save("THAT") + \
-                "@SP\n" \
-                "D=M\n" \
-                "@LCL\n" \
-                "M=D\n" \
-                "@ARG\n" \
-                "M=D\n"
+                  self.save("LCL") + \
+                  self.save("ARG") + \
+                  self.save("THIS") + \
+                  self.save("THAT") + \
+                  "@SP\n" \
+                  "D=M\n" \
+                  "@LCL\n" \
+                  "M=D\n" \
+                  "@ARG\n" \
+                  "M=D\n"
         for i in range(n_args + 5):
             output += "M=M-1\n"
         output += "@" + function_name + "\n" \
-                "0;JMP\n" \
-                "(RETURN" + str(self.jump_var) + function_name + ")\n"
+                                        "0;JMP\n" \
+                                        "(RETURN" + str(self.jump_var) + function_name + ")\n"
         self.output_file.write(output)
-
-
-
 
     def write_return(self) -> None:
         """Writes assembly code that affects the return command."""
@@ -286,7 +276,6 @@ class CodeWriter:
                  "@RETADDR\n" \
                  "0;JMP\n"
 
-
     def write_add(self):
         return "// add\n" \
                "@SP\n" \
@@ -296,6 +285,7 @@ class CodeWriter:
                "A=A-1\n" \
                "D=D+M\n" \
                "M=D\n"
+
     # THIS IS A TEST
 
     def write_sub(self):
@@ -317,63 +307,65 @@ class CodeWriter:
     def write_eq(self):
         self.jump_var += 1
         return "//eq\n" \
-                + self.write_sub() \
+               + self.write_sub() \
                + "\n" + \
-                  "@EQUAL"+ str(self.jump_var) + "\n" \
-                  "D;JEQ\n" \
-                  "@SP\n" \
-                  "A=M\n" \
-                  "A=A-1\n" \
-                  "M=0\n" \
-                  "@EQEND" + str(self.jump_var) + "\n" \
-                  "0;JMP\n" \
-                  "(EQUAL"+ str(self.jump_var) + ")\n" \
-                  "@SP\n" \
-                  "A=M\n" \
-                  "A=A-1\n" \
-                  "M=-1\n" \
-                  "(EQEND"+ str(self.jump_var) + ")\n"
-
+               "@EQUAL" + str(self.jump_var) + "\n" \
+                                               "D;JEQ\n" \
+                                               "@SP\n" \
+                                               "A=M\n" \
+                                               "A=A-1\n" \
+                                               "M=0\n" \
+                                               "@EQEND" + str(self.jump_var) + "\n" \
+                                                                               "0;JMP\n" \
+                                                                               "(EQUAL" + str(self.jump_var) + ")\n" \
+                                                                                                               "@SP\n" \
+                                                                                                               "A=M\n" \
+                                                                                                               "A=A-1\n" \
+                                                                                                               "M=-1\n" \
+                                                                                                               "(EQEND" + str(
+            self.jump_var) + ")\n"
 
     def write_gt(self):
         self.jump_var += 1
         return "//gt\n" \
                + self.write_sub() \
-            + "\n" + \
+               + "\n" + \
                "@GREATER" + str(self.jump_var) + "\n" \
-               "D;JGT\n" \
-               "@SP\n" \
-               "A=M\n" \
-               "A=A-1\n" \
-               "M=0\n" \
-               "@GREATEREND" + str(self.jump_var) + "\n" \
-               "0;JMP\n" \
-               "(GREATER" + str(self.jump_var) + ")\n" \
-               "@SP\n" \
-               "A=M\n" \
-               "A=A-1\n" \
-               "M=-1\n" \
-               "(GREATEREND" + str(self.jump_var) + ")\n"
+                                                 "D;JGT\n" \
+                                                 "@SP\n" \
+                                                 "A=M\n" \
+                                                 "A=A-1\n" \
+                                                 "M=0\n" \
+                                                 "@GREATEREND" + str(self.jump_var) + "\n" \
+                                                                                      "0;JMP\n" \
+                                                                                      "(GREATER" + str(
+            self.jump_var) + ")\n" \
+                             "@SP\n" \
+                             "A=M\n" \
+                             "A=A-1\n" \
+                             "M=-1\n" \
+                             "(GREATEREND" + str(self.jump_var) + ")\n"
 
     def write_lt(self):
         self.jump_var += 1
         return "//lt\n" \
                + self.write_sub() \
-            + "\n" + \
+               + "\n" + \
                "@LESSTHAN" + str(self.jump_var) + "\n" \
-               "D;JLT\n" \
-               "@SP\n" \
-               "A=M\n" \
-               "A=A-1\n" \
-               "M=0\n" \
-               "@LESSTEND" + str(self.jump_var) + "\n" \
-               "0;JMP\n" \
-               "(LESSTHAN" + str(self.jump_var) + ")\n" \
-               "@SP\n" \
-               "A=M\n" \
-               "A=A-1\n" \
-               "M=-1\n" \
-               "(LESSTEND" + str(self.jump_var) + ")\n"
+                                                  "D;JLT\n" \
+                                                  "@SP\n" \
+                                                  "A=M\n" \
+                                                  "A=A-1\n" \
+                                                  "M=0\n" \
+                                                  "@LESSTEND" + str(self.jump_var) + "\n" \
+                                                                                     "0;JMP\n" \
+                                                                                     "(LESSTHAN" + str(
+            self.jump_var) + ")\n" \
+                             "@SP\n" \
+                             "A=M\n" \
+                             "A=A-1\n" \
+                             "M=-1\n" \
+                             "(LESSTEND" + str(self.jump_var) + ")\n"
 
     def write_and(self):
         self.jump_var += 1
@@ -385,10 +377,8 @@ class CodeWriter:
                "A=A-1\n" \
                "M=D&M\n"
 
-
-
     def write_or(self):
-        return "//or\n" +\
+        return "//or\n" + \
                "@SP\n" \
                "M=M-1\n" \
                "A=M\n" \
@@ -401,23 +391,21 @@ class CodeWriter:
                "@SP\n" \
                "A=M-1\n" \
                "M=!M\n" \
-
-
-
+ \
     def push_command(self, segment, index):
         output = "@" + str(index) + "\nD=A\n"
-        if segment in ["static", "pointer","temp"]:
-            output += "@" + self.dict[segment] +\
-                      "\nA=D+A\n" +\
+        if segment in ["static", "pointer", "temp"]:
+            output += "@" + self.dict[segment] + \
+                      "\nA=D+A\n" + \
                       "D=M\n"
         elif segment in self.dict:
-            output += "@" + self.dict[segment] + "\nA=M\n"+ "A=D+A\n" \
-                  "D=M\n"
+            output += "@" + self.dict[segment] + "\nA=M\n" + "A=D+A\n" \
+                                                             "D=M\n"
         output += "@SP\n" \
-        "A=M\n" \
-        "M=D\n" \
-        "@SP\n" \
-        "M=M+1\n"
+                  "A=M\n" \
+                  "M=D\n" \
+                  "@SP\n" \
+                  "M=M+1\n"
         return output
 
     def pop_command(self, segment, index):
@@ -426,23 +414,23 @@ class CodeWriter:
             return "@SP\n" \
                    "M=M-1\n"
         output = "@" + self.dict[segment]
-        if segment in ["temp","static","pointer"]:
+        if segment in ["temp", "static", "pointer"]:
             output += "\nD=A\n"
         else:
-            output +=  "\nD=M\n"
-        output +=   "@TAR" + str(self.jump_var) + "\n" \
-                    "M=D\n" \
-                    "@"+str(index)+\
-                    "\nD=A\n" \
-                    "@TAR" + str(self.jump_var) + "\n" \
-                    "M=D+M\n" \
-                    "@SP\n" \
-                    "M=M-1\n" \
-                    "A=M\n" \
-                    "D=M\n" \
-                    "@TAR" + str(self.jump_var) + "\n" \
-                    "A=M\n" \
-                    "M=D\n"
+            output += "\nD=M\n"
+        output += "@TAR" + str(self.jump_var) + "\n" \
+                                                "M=D\n" \
+                                                "@" + str(index) + \
+                  "\nD=A\n" \
+                  "@TAR" + str(self.jump_var) + "\n" \
+                                                "M=D+M\n" \
+                                                "@SP\n" \
+                                                "M=M-1\n" \
+                                                "A=M\n" \
+                                                "D=M\n" \
+                                                "@TAR" + str(self.jump_var) + "\n" \
+                                                                              "A=M\n" \
+                                                                              "M=D\n"
         return output
 
     def save(self, segment):
@@ -452,4 +440,3 @@ class CodeWriter:
                                "M=M+1\n" \
                                "A=M-1\n" \
                                "M=D\n"
-
