@@ -275,6 +275,7 @@ class CodeWriter:
                  "D=D-1\n" \
                  "@RETADDR\n" \
                  "0;JMP\n"
+        self.output_file.write(output)
 
     def write_add(self):
         return "// add\n" \
