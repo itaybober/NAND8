@@ -210,7 +210,7 @@ class CodeWriter:
         self.jump_var += 1
         # sve return address
         output = "// Call " + function_name + " " + str(n_args)
-        output += "@RETURN" + str(self.jump_var) + function_name + "\n" + \
+        output += "\n@RETURN" + str(self.jump_var) + function_name + "\n" + \
                   self.save("LCL") + \
                   self.save("ARG") + \
                   self.save("THIS") + \
@@ -242,41 +242,62 @@ class CodeWriter:
         # goto return_address           // go to the return address
         output = "// write return\n" \
                  "@LCL\n" \
-                 "D=A\n" \
+                 "D=M\n" \
                  "@FRAME\n" \
                  "M=D\n" \
                  "@5\n" \
                  "D=A\n" \
                  "@FRAME\n" \
                  "D=M-D\n" \
+                 "A=D\n" \
+                 "D=M\n" \
                  "@RETADDR\n" \
                  "M=D\n" \
                  "@SP\n" \
                  "A=M-1\n" \
                  "D=M\n" \
                  "@ARG\n" \
+                 "A=M\n" \
                  "M=D\n" \
                  "D=A+1\n" \
                  "@SP\n" \
                  "M=D\n" \
                  "@FRAME\n" \
-                 "D=M-1\n" \
+                 "A=M\n" \
+                 "A=A-1\n" \
+                 "D=M\n" \
                  "@THAT\n" \
                  "M=D\n" \
-                 "D=D-1\n" \
-                 "@THIS\n" \
-                 "M=D\n" \
-                 "D=D-1\n" \
-                 "@ARG\n" \
-                 "M=D\n" \
-                 "D=D-1\n" \
-                 "@LCL\n" \
-                 "M=D\n" \
-                 "D=D-1\n" \
-                 "@RETADDR\n" \
-                 "D=M\n" \
-                 "0;JMP\n"
+                "@FRAME\n" \
+                 "A=M\n" \
+                 "A=A-1\n" \
+                "A=A-1\n" \
+                "D=M\n" \
+                "@THIS\n" \
+                "M=D\n" \
+                "@FRAME\n" \
+                 "A=M\n" \
+                 "A=A-1\n" \
+                "A=A-1\n" \
+                "A=A-1\n" \
+                "D=M\n" \
+                "@ARG\n" \
+                "M=D\n" \
+                "@FRAME\n" \
+                 "A=M\n" \
+                 "A=A-1\n" \
+                "A=A-1\n" \
+                "A=A-1\n" \
+                "A=A-1\n" \
+                "D=M\n" \
+                "@LCL\n" \
+                "M=D\n" \
+                "@RETADDR\n" \
+                "A=M\n" \
+                "0;JMP\n"
         self.output_file.write(output)
+
+
 
     def write_add(self):
         return "// add\n" \

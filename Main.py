@@ -50,6 +50,10 @@ def translate_file(
             code_writer.write_function(name,num)
         elif command_type in ["C_RETURN"]:
             code_writer.write_return()
+        elif command_type in ["C_CALL"]:
+            func_name = parser.arg1()
+            n_vars = parser.arg2()
+            code_writer.write_call(func_name,n_vars)
         parser.advance()
     output_file.close()
 
@@ -61,29 +65,29 @@ if "__main__" == __name__:
     # If the output file does not exist, it is created automatically in the
     # correct path, using the correct filename.
 
-    with open("FunctionCalls/SimpleFunction/SimpleFunction.asm", 'w') as output_file:
-        with open("FunctionCalls/SimpleFunction/SimpleFunction.vm", 'r') as input_file:
-                translate_file(input_file, output_file, True)
+    # with open("FunctionCalls/SimpleFunction/SimpleFunction.asm", 'w') as output_file:
+    #     with open("FunctionCalls/SimpleFunction/SimpleFunction.vm", 'r') as input_file:
+    #             translate_file(input_file, output_file, True)
 
-    # if not len(sys.argv) == 2:
-    #     sys.exit("Invalid usage, please use: VMtranslator <input path>")
-    # argument_path = os.path.abspath(sys.argv[1])
-    # if os.path.isdir(argument_path):
-    #     files_to_translate = [
-    #         os.path.join(argument_path, filename)
-    #         for filename in os.listdir(argument_path)]
-    #     output_path = os.path.join(argument_path, os.path.basename(
-    #         argument_path))
-    # else:
-    #     files_to_translate = [argument_path]
-    #     output_path, extension = os.path.splitext(argument_path)
-    # output_path += ".asm"
-    # bootstrap = True
-    # with open(output_path, 'w') as output_file:
-    #     for input_path in files_to_translate:
-    #         filename, extension = os.path.splitext(input_path)
-    #         if extension.lower() != ".vm":
-    #             continue
-    #         with open(input_path, 'r') as input_file:
-    #             translate_file(input_file, output_file, bootstrap)
-    #         bootstrap = False
+    if not len(sys.argv) == 2:
+        sys.exit("Invalid usage, please use: VMtranslator <input path>")
+    argument_path = os.path.abspath(sys.argv[1])
+    if os.path.isdir(argument_path):
+        files_to_translate = [
+            os.path.join(argument_path, filename)
+            for filename in os.listdir(argument_path)]
+        output_path = os.path.join(argument_path, os.path.basename(
+            argument_path))
+    else:
+        files_to_translate = [argument_path]
+        output_path, extension = os.path.splitext(argument_path)
+    output_path += ".asm"
+    bootstrap = True
+    with open(output_path, 'w') as output_file:
+        for input_path in files_to_translate:
+            filename, extension = os.path.splitext(input_path)
+            if extension.lower() != ".vm":
+                continue
+            with open(input_path, 'r') as input_file:
+                translate_file(input_file, output_file, bootstrap)
+            bootstrap = False
