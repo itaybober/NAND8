@@ -200,10 +200,28 @@ class CodeWriter:
         # LCL = SP              // repositions LCL
         # goto function_name    // transfers control to the callee
         # (return_address)      // injects the return address label into the code
-        # TODO Where do THIS/THAT get updated to?
 
         self.jump_var += 1
-        output = "(RETURN" + str(self.jump_var) + function_name + ")\n@LCL\n"
+        # sve return address
+        output = "// Call " + function_name + " " + str(n_args)
+        output += "@RETURN" + str(self.jump_var) + function_name + "\n" + \
+                 self.save("LCL") + \
+                 self.save("ARG") + \
+                 self.save("THIS") + \
+                 self.save("THAT") + \
+                "@SP\n" \
+                "D=M\n" \
+                "@LCL\n" \
+                "M=D\n" \
+                "@ARG\n" \
+                "M=D\n"
+        for i in range(n_args + 5):
+            output += "M=M-1\n"
+        output += "@" + function_name + "\n" \
+                "0;JMP\n" \
+                "(RETURN" + str(self.jump_var) + function_name + ")\n"
+        self.output_file.write(output)
+
 
 
 
@@ -380,3 +398,12 @@ class CodeWriter:
                     "A=M\n" \
                     "M=D\n"
         return output
+
+    def save(self, segment):
+        return "@" + segment + "\n" \
+                               "D=M\n" \
+                               "@SP\n" \
+                               "M=M+1\n" \
+                               "A=M-1\n" \
+                               "M=D\n"
+
