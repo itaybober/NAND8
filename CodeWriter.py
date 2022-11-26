@@ -116,7 +116,10 @@ class CodeWriter:
             label (str): the label to write.
         """
         output = "// write label\n" \
-                 "(" + str(self.cur_func) + "$" + label + "\n"
+        if self.cur_func == "":
+            output += '(' + label + ')'
+        else:
+             output += "(" + str(self.cur_func) + "$" + label + ')' + "\n"
         self.output_file.write(output)
 
 
