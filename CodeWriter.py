@@ -115,7 +115,7 @@ class CodeWriter:
         Args:
             label (str): the label to write.
         """
-        output = "// write label\n" \
+        output = "// write label\n"
         if self.cur_func == "":
             output += '(' + label + ')'
         else:
@@ -129,9 +129,12 @@ class CodeWriter:
         Args:
             label (str): the label to go to.
         """
-        output = "// write goto\n" \
-                 "@" + str(self.cur_func) + "$" + label + "\n"\
-                 "0;JMP\n"
+        output = "// write goto\n"
+        if self.cur_func == "":
+            output += '(' + label + ')'
+        else:
+            "@" + str(self.cur_func) + "$" + label + "\n"
+        output += "0;JMP\n"
         self.output_file.write(output)
 
 
