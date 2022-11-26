@@ -131,15 +131,22 @@ class CodeWriter:
                  "0;JMP\n"
         self.output_file.write(output)
 
+
     def write_if(self, label: str) -> None:
         """Writes assembly code that affects the if-goto command. 
 
         Args:
             label (str): the label to go to.
         """
-        # This is irrelevant for project 7,
-        # you will implement this in project 8!
-        pass
+        output = "// write if goto\n" \
+                 "@SP\n" \
+                 "M=M-1\n" \
+                 "A=M\n" \
+                 "D=M\n" \
+                 "@" + str(self.cur_func) + "$" + label + "\n" \
+                 "D;JEQ"
+        self.output_file.write(output)
+
 
     def write_function(self, function_name: str, n_vars: int) -> None:
         """Writes assembly code that affects the function command. 
@@ -209,8 +216,6 @@ class CodeWriter:
 
     def write_return(self) -> None:
         """Writes assembly code that affects the return command."""
-        # This is irrelevant for project 7,
-        # you will implement this in project 8!
         # The pseudo-code of "return" is:
         # frame = LCL                   // frame is a temporary variable
         # return_address = *(frame-5)   // puts the return address in a temp var
@@ -221,7 +226,42 @@ class CodeWriter:
         # ARG = *(frame-3)              // restores ARG for the caller
         # LCL = *(frame-4)              // restores LCL for the caller
         # goto return_address           // go to the return address
-        pass
+        output = "// write return\n" \
+                 "@LCL\n" \
+                 "D=A\n" \
+                 "@FRAME\n" \
+                 "M=D\n" \
+                 "@5\n" \
+                 "D=A\n" \
+                 "FRAME\n" \
+                 "D=M-D\n" \
+                 "@RETADDR\n" \
+                 "M=D\n" \
+                 "@SP\n" \
+                 "A=A-1\n" \
+                 "D=M\n" \
+                 "@ARG\n" \
+                 "M=D\n" \
+                 "D=A+1\n" \
+                 "@SP\n" \
+                 "M=D\n" \
+                 "@FRAME\n" \
+                 "D=M-1\n" \
+                 "@THAT\n" \
+                 "M=D\n" \
+                 "D=D-1\n" \
+                 "@THIS\n" \
+                 "M=D\n" \
+                 "D=D-1\n" \
+                 "@ARG\n" \
+                 "M=D\n" \
+                 "D=D-1\n" \
+                 "@LCL\n" \
+                 "M=D\n" \
+                 "D=D-1\n" \
+                 "@RETADDR\n" \
+                 "0;JMP\n"
+
 
     def write_add(self):
         return "// add\n" \
