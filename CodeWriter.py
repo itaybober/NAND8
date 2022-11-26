@@ -125,7 +125,7 @@ class CodeWriter:
         if self.cur_func == "":
             output += '@' + label + "\n"
         else:
-            "@" + str(self.cur_func) + "$" + label + "\n"
+            output += "@" + str(self.cur_func) + "$" + label + "\n"
         output += "0;JMP\n"
         self.output_file.write(output)
 
@@ -210,8 +210,8 @@ class CodeWriter:
         self.jump_var += 1
         # sve return address
         output = "// Call " + function_name + " " + str(n_args)
-        output += "@RETURN" + str(self.jump_var) + function_name + \
-                  "\nD=M\n" \
+        output += "\n@RETURN" + str(self.jump_var) + function_name + \
+                  "\nD=A\n" \
                   "@SP\n" \
                   "M=M+1\n" \
                   "A=M-1\n" \
