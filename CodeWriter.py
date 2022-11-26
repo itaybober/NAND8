@@ -167,7 +167,7 @@ class CodeWriter:
         # repeat n_vars times:  // n_vars = number of local variables
         #   push constant 0     // initializes the local variables to 0
         self.cur_func = function_name
-        output = "// function " + function_name + " " + n_vars
+        output = "// function " + function_name + " " + str(n_vars)
         output += "(" + function_name + ")\n" \
                  "@" + str(n_vars) + "\n" \
                  "D=A\n" \
