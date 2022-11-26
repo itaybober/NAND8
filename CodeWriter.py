@@ -247,12 +247,12 @@ class CodeWriter:
                  "M=D\n" \
                  "@5\n" \
                  "D=A\n" \
-                 "FRAME\n" \
+                 "@FRAME\n" \
                  "D=M-D\n" \
                  "@RETADDR\n" \
                  "M=D\n" \
                  "@SP\n" \
-                 "A=A-1\n" \
+                 "A=M-1\n" \
                  "D=M\n" \
                  "@ARG\n" \
                  "M=D\n" \
@@ -274,6 +274,7 @@ class CodeWriter:
                  "M=D\n" \
                  "D=D-1\n" \
                  "@RETADDR\n" \
+                 "D=M\n" \
                  "0;JMP\n"
         self.output_file.write(output)
 
