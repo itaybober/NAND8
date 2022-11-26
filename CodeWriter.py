@@ -210,7 +210,12 @@ class CodeWriter:
         self.jump_var += 1
         # sve return address
         output = "// Call " + function_name + " " + str(n_args)
-        output += "\n@RETURN" + str(self.jump_var) + function_name + "\n" + \
+        output += "@RETURN" + str(self.jump_var) + function_name + \
+                  "\nD=M\n" \
+                  "@SP\n" \
+                  "M=M+1\n" \
+                  "A=M-1\n" \
+                  "M=D\n" + \
                   self.save("LCL") + \
                   self.save("ARG") + \
                   self.save("THIS") + \
@@ -240,8 +245,9 @@ class CodeWriter:
         # ARG = *(frame-3)              // restores ARG for the caller
         # LCL = *(frame-4)              // restores LCL for the caller
         # goto return_address           // go to the return address
-        output = "// write return\n" \
-                 "@LCL\n" \
+
+        output = "// write return " + self.cur_func +  \
+                 "\n@LCL\n" \
                  "D=M\n" \
                  "@FRAME\n" \
                  "M=D\n" \
