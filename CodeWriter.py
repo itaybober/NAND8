@@ -117,7 +117,7 @@ class CodeWriter:
         """
         output = "// write label\n"
         if self.cur_func == "":
-            output += '(' + label + ')'
+            output += '(' + label + ')' + "\n"
         else:
              output += "(" + str(self.cur_func) + "$" + label + ')' + "\n"
         self.output_file.write(output)
@@ -131,7 +131,7 @@ class CodeWriter:
         """
         output = "// write goto\n"
         if self.cur_func == "":
-            output += '(' + label + ')'
+            output += '(' + label + ')' + "\n"
         else:
             "@" + str(self.cur_func) + "$" + label + "\n"
         output += "0;JMP\n"
