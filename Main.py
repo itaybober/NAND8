@@ -35,6 +35,19 @@ def translate_file(
         elif command_type in ["C_ARITHMETIC"]:
             command = parser.arg1()
             code_writer.write_arithmetic(command)
+        elif command_type in ["C_LABEL"]:
+            label = parser.arg1()
+            code_writer.write_label(label)
+        elif command_type in ["C_IF"]:
+            label = parser.arg1()
+            code_writer.write_if(label)
+        elif command_type in ["C_GOTO"]:
+            label = parser.arg1()
+            code_writer.write_goto()
+        elif command_type in ["C_FUNCTION"]:
+            name = parser.arg1()
+            num = parser.arg2()
+            code_writer.write_function(name,num)
         parser.advance()
     output_file.close()
 
