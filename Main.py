@@ -55,7 +55,7 @@ def translate_file(
             n_vars = parser.arg2()
             code_writer.write_call(func_name,n_vars)
         parser.advance()
-    output_file.close()
+
 
 
 if "__main__" == __name__:

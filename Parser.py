@@ -57,7 +57,6 @@ class Parser:
         # A good place to start is to read all the lines of the input:
         # input_lines = input_file.read().splitlines()
         self.input_lines = input_file.read().splitlines()
-
         self.input_lines = self.clean_code()
         self.curindex = 0
 
@@ -92,6 +91,7 @@ class Parser:
             comment_index = line.find("//")
             if(comment_index != -1):
                 line = line[:comment_index]
+                line = " ".join(line.split())
             if line != "":
                 clean_lines.append(line)
         return clean_lines
