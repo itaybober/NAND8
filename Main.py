@@ -26,6 +26,10 @@ def translate_file(
     # Your code goes here!
     parser = Parser(input_file)
     code_writer = CodeWriter(output_file)
+    i = input_file.name.rfind("\\")
+    code_writer.set_file_name(input_file.name[i:])
+    print(input_file.name[i+1:])
+
 
     if bootstrap:
         code_writer.write_init()
