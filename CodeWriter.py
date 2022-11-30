@@ -479,7 +479,6 @@ class CodeWriter:
         output = "@256\n" \
                  "D=A\n" \
                  "@SP\n" \
-                 "M=D\n" \
-                 "@Sys.init\n" \
-                 "0;JMP\n"
+                 "M=D\n"
         self.output_file.write(output)
+        self.write_call("Sys.init",0)

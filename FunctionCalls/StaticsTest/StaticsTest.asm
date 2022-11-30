@@ -2,8 +2,51 @@
 D=A
 @SP
 M=D
+// Call Sys.init 0
+@RETURN1Sys.init
+D=A
+@SP
+M=M+1
+A=M-1
+M=D
+@LCL
+D=M
+@SP
+M=M+1
+A=M-1
+M=D
+@ARG
+D=M
+@SP
+M=M+1
+A=M-1
+M=D
+@THIS
+D=M
+@SP
+M=M+1
+A=M-1
+M=D
+@THAT
+D=M
+@SP
+M=M+1
+A=M-1
+M=D
+@SP
+D=M
+@LCL
+M=D
+@ARG
+M=D
+M=M-1
+M=M-1
+M=M-1
+M=M-1
+M=M-1
 @Sys.init
 0;JMP
+(RETURN1Sys.init)
 // function Class1.set 0
 (Class1.set)
 @0
@@ -26,17 +69,17 @@ M=M+1
 // C_POP static 0
 @100
 D=A
-@TAR1
+@TAR2
 M=D
 @0
 D=A
-@TAR1
+@TAR2
 M=D+M
 @SP
 M=M-1
 A=M
 D=M
-@TAR1
+@TAR2
 A=M
 M=D
 // C_PUSH argument 1
@@ -54,17 +97,17 @@ M=M+1
 // C_POP static 1
 @100
 D=A
-@TAR2
+@TAR3
 M=D
 @1
 D=A
-@TAR2
+@TAR3
 M=D+M
 @SP
 M=M-1
 A=M
 D=M
-@TAR2
+@TAR3
 A=M
 M=D
 // C_PUSH constant 0
@@ -78,15 +121,15 @@ M=M+1
 // write return Class1.set
 @LCL
 D=M
-@FRAME3
+@FRAME4
 M=D
 @5
 D=A
-@FRAME3
+@FRAME4
 D=M-D
 A=D
 D=M
-@RETADDR3
+@RETADDR4
 M=D
 @SP
 A=M-1
@@ -97,20 +140,20 @@ M=D
 D=A+1
 @SP
 M=D
-@FRAME3
+@FRAME4
 A=M
 A=A-1
 D=M
 @THAT
 M=D
-@FRAME3
+@FRAME4
 A=M
 A=A-1
 A=A-1
 D=M
 @THIS
 M=D
-@FRAME3
+@FRAME4
 A=M
 A=A-1
 A=A-1
@@ -118,7 +161,7 @@ A=A-1
 D=M
 @ARG
 M=D
-@FRAME3
+@FRAME4
 A=M
 A=A-1
 A=A-1
@@ -127,7 +170,7 @@ A=A-1
 D=M
 @LCL
 M=D
-@RETADDR3
+@RETADDR4
 A=M
 0;JMP
 // function Class1.get 0
@@ -170,15 +213,15 @@ M=D
 // write return Class1.get
 @LCL
 D=M
-@FRAME4
+@FRAME5
 M=D
 @5
 D=A
-@FRAME4
+@FRAME5
 D=M-D
 A=D
 D=M
-@RETADDR4
+@RETADDR5
 M=D
 @SP
 A=M-1
@@ -189,20 +232,20 @@ M=D
 D=A+1
 @SP
 M=D
-@FRAME4
+@FRAME5
 A=M
 A=A-1
 D=M
 @THAT
 M=D
-@FRAME4
+@FRAME5
 A=M
 A=A-1
 A=A-1
 D=M
 @THIS
 M=D
-@FRAME4
+@FRAME5
 A=M
 A=A-1
 A=A-1
@@ -210,7 +253,7 @@ A=A-1
 D=M
 @ARG
 M=D
-@FRAME4
+@FRAME5
 A=M
 A=A-1
 A=A-1
@@ -219,7 +262,7 @@ A=A-1
 D=M
 @LCL
 M=D
-@RETADDR4
+@RETADDR5
 A=M
 0;JMP
 // function Class2.set 0
