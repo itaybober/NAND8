@@ -469,3 +469,12 @@ class CodeWriter:
                                "M=M+1\n" \
                                "A=M-1\n" \
                                "M=D\n"
+
+    def write_init(self):
+        output = "@256\n" \
+                 "D=A\n" \
+                 "@SP\n" \
+                 "M=D\n" \
+                 "@Sys.init\n" \
+                 "0;JMP\n"
+        self.output_file.write(output)

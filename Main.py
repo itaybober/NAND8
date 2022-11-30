@@ -26,6 +26,10 @@ def translate_file(
     # Your code goes here!
     parser = Parser(input_file)
     code_writer = CodeWriter(output_file)
+
+    if bootstrap:
+        code_writer.write_init()
+
     while (parser.has_more_commands()):
         command_type = parser.command_type()
         if command_type in ["C_POP", "C_PUSH"]:
