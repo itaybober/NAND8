@@ -12,6 +12,8 @@ import typing
 class CodeWriter:
     """Translates VM commands into Hack assembly code."""
 
+    STATIC_COUNTER = 0
+
     def __init__(self, output_stream: typing.TextIO) -> None:
         """Initializes the CodeWriter.
 
@@ -21,9 +23,10 @@ class CodeWriter:
         # Your code goes here!
         # Note that you can write to output_stream like so:
         # output_stream.write("Hello world! \n")
+        self.cur_static = CodeWriter.STATIC_COUNTER
         self.filename = ""
         self.output_file = output_stream
-        self.dict = {"static": "16", "local": "LCL", "argument": "ARG", "this": "THIS", "that": "THAT",
+        self.dict = {"static": str(100 + self.cur_static), "local": "LCL", "argument": "ARG", "this": "THIS", "that": "THAT",
                      "temp": "5", "pointer": "3", "heap": "2048"}
         self.jump_var = 0
         self.cur_func = ""
@@ -444,6 +447,8 @@ class CodeWriter:
                    "M=M-1\n"
         output = "@" + self.dict[segment]
         if segment in ["temp", "static", "pointer"]:
+            if segment == "static":
+                CodeWriter.STATIC_COUNTER += 1
             output += "\nD=A\n"
         else:
             output += "\nD=M\n"

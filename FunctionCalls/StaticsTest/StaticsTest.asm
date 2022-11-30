@@ -24,7 +24,7 @@ M=D
 @SP
 M=M+1
 // C_POP static 0
-@16
+@100
 D=A
 @TAR1
 M=D
@@ -52,7 +52,7 @@ M=D
 @SP
 M=M+1
 // C_POP static 1
-@16
+@100
 D=A
 @TAR2
 M=D
@@ -140,7 +140,7 @@ A=M-D
 // C_PUSH static 0
 @0
 D=A
-@16
+@100
 A=D+A
 D=M
 @SP
@@ -151,7 +151,7 @@ M=M+1
 // C_PUSH static 1
 @1
 D=A
-@16
+@100
 A=D+A
 D=M
 @SP
@@ -242,7 +242,7 @@ M=D
 @SP
 M=M+1
 // C_POP static 0
-@16
+@102
 D=A
 @TAR1
 M=D
@@ -270,7 +270,7 @@ M=D
 @SP
 M=M+1
 // C_POP static 1
-@16
+@102
 D=A
 @TAR2
 M=D
@@ -358,7 +358,7 @@ A=M-D
 // C_PUSH static 0
 @0
 D=A
-@16
+@102
 A=D+A
 D=M
 @SP
@@ -369,7 +369,7 @@ M=M+1
 // C_PUSH static 1
 @1
 D=A
-@16
+@102
 A=D+A
 D=M
 @SP
